@@ -2,7 +2,7 @@
 % Please edit documentation in R/survey_criteria_score_plots.R
 \name{plot_scores}
 \alias{plot_scores}
-\title{}
+\title{Helper Function for Plot Function from Plot.matrix Package}
 \usage{
 plot_scores(matplot, mar = c(8, 14, 4, 4))
 }
@@ -15,5 +15,5 @@ plot_scores(matplot, mar = c(8, 14, 4, 4))
 Plot of matrix
 }
 \description{
-
+Helper Function for Plot Function from Plot.matrix Package
 }

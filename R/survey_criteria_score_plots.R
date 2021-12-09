@@ -138,7 +138,7 @@ survey_scores_hists <- function(smart_tool_output, save_output = FALSE, save_fil
 
 
 
-#' Helper Function for \code{plot} Function from \code(plot.matrix} Package
+#' Helper Function for Plot Function from Plot.matrix Package
 #'
 #' @param matplot Value returned from \code{plot.matrix} package.
 #' @param mar Argument for margins passed on to \code{plot} function.
