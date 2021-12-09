@@ -11,11 +11,11 @@
 #'
 priority_score_barchart <- function(smart_tool_output, save_output = FALSE, save_filepath = NULL){
     # Bar chart of survey priority scores
-    old.par <- par(no.readonly = TRUE)
-    end_point <-  0.5 + nrow(smart_tool_output) + nrow(smart_tool_output) - 1
-    bar_cols <- gray.colors(2)[as.numeric(smart_tool_output$source)]
+    old.par = par(no.readonly = TRUE)
+    end_point =  0.5 + nrow(smart_tool_output) + nrow(smart_tool_output) - 1
+    bar_cols = gray.colors(2)[as.numeric(smart_tool_output$source)]
     if(save_output){
-        if(is.null(save_filepath))save_filepath <- getwd()
+        if(is.null(save_filepath))save_filepath = getwd()
         png(paste0("output/tet/survey_priority_score_barchart_", gsub("-","",Sys.Date()),".png"),
             height = 6.5, width = 9, units = "in", res = 192)
         par(mar = c(8,5,2,2))
@@ -50,14 +50,14 @@ priority_score_barchart <- function(smart_tool_output, save_output = FALSE, save
 #'
 priority_score_piechart <- function(smart_tool_output, save_output = FALSE, save_filepath = NULL){
     # Pie chart of survey priority score
-    old.par <- par(no.readonly = TRUE)
-    slices <- smart_tool_output$survey_priority_score
-    lbls <- smart_tool_output$survey_name
-    pct <- round(slices/sum(slices)*100)
-    lbls <- paste(lbls, pct) # add percents to labels
-    lbls <- paste(lbls,"%",sep = "") # ad % to labels
+    old.par = par(no.readonly = TRUE)
+    slices = smart_tool_output$survey_priority_score
+    lbls = smart_tool_output$survey_name
+    pct = round(slices/sum(slices)*100)
+    lbls = paste(lbls, pct) # add percents to labels
+    lbls = paste(lbls,"%",sep = "") # ad % to labels
     if(save_output){
-        if(is.null(save_filepath))save_filepath <- getwd()
+        if(is.null(save_filepath))save_filepath = getwd()
         png(paste0("output/tet/survey_priority_score_piechart_", gsub("-","",Sys.Date()),".png"),
             height = 6.5, width = 6.5, units = "in", res = 192)
         pie(slices,labels = lbls, col = rainbow(length(lbls)),
