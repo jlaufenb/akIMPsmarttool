@@ -10,5 +10,5 @@ License: What license is it under?
 Encoding: UTF-8
 LazyData: true
 Imports:
-    scatterplot3d
+    scatterplot3d,
     plot.matrix
