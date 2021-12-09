@@ -1,14 +1,14 @@
 Package: akIMPsmarttool
 Type: Package
-Title: What the Package Does (Title Case)
-Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Title: AKIM SMART Tool for Refuge IMP Development
+Version: 0.0.0.9000
+Author: Jared Laufenberg
+Maintainer: Jared Laufenberg <jared_laufenberg@fws.gov>
+Description: Suite of R functions used to implement the IMP Smart Tool and other related survey selection tools.
+License: None
 Encoding: UTF-8
 LazyData: true
 Imports:
     scatterplot3d,
     plot.matrix
+RoxygenNote: 7.1.1
