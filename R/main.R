@@ -1,24 +1,23 @@
 
-#' Title
+#' Calculate Survey Priority Scores with SMART Tool
 #'
-#' @param refuge_code 
-#' @param start_year 
-#' @param nyears 
-#' @param annual_staff_budget 
-#' @param survey_scores 
-#' @param criteria_weights 
-#' @param save_output 
-#' @param save_filepath 
+#' @param refuge_code Refuge 3-character organization code.
+#' @param start_year Start year of the IMP.
+#' @param nyears Duration of IMP.
+#' @param annual_staff_budget Annual total number of FTE weeks available for surveys.
+#' @param survey_scores_filepath Full file path (including file name) to CSV file containing raw survey scores for SMART tool.
+#' @param criteria_weights_filepath Full file path (including file name) to CSV file containing criteria weights for SMART tool.
+#' @param save_output Logical value controlling whether output is saved as CSV. Default is FALSE.
+#' @param save_filepath File path to folder where output is saved. File names are internally generated.
 #'
-#' @return
+#' @return A data.frame containing SMART tool inputs and outputs including survey priority scores and ranks.
 #' @export
 #'
-#' @examples
 imp_smart_tool <- function(refuge_code = NULL, start_year = NULL, nyears = NULL, annual_staff_budget = NULL,
-                           survey_scores = NULL, criteria_weights = NULL, save_output = FALSE, save_filepath = NULL){
+                           survey_scores_filepath = NULL, criteria_weights_filepath = NULL, save_output = FALSE, save_filepath = NULL){
     imp_staff_budget <- annual_staff_budget * nyears
-    surveydat_df <- read.csv(survey_scores)
-    criteria_df <- read.csv(criteria_weights)
+    surveydat_df <- read.csv(survey_scores_filepath)
+    criteria_df <- read.csv(criteria_weights_filepath)
     if(sum(criteria_df$name_lev1 %in% "Cost")==1)criteria_df$name_lev2[criteria_df$name_lev1 %in% "Cost"] <- "Cost"
     raw_scores <- surveydat_df[,grep("criterion", colnames(surveydat_df))]
     norm_scores <- as.data.frame(lapply(raw_scores, function(x)(x - min(x))/(diff(range(x)))))
@@ -42,23 +41,22 @@ imp_smart_tool <- function(refuge_code = NULL, start_year = NULL, nyears = NULL,
     attr(smart_tool_output, "criteria_names") <- criteria_df$name_lev2
     attr(smart_tool_output, "criteria_weights") <- criteria_df$final_weight
     return(smart_tool_output)
-    
+
 }
 
 
 
 
-#' Title
+#' Plot Annual Survey Implementation Schedule
 #'
-#' @param smart_tool_output 
-#' @param survey_schedule 
-#' @param save_output 
-#' @param save_filepath 
+#' @param smart_tool_output A data.frame containing SMART tool inputs and outputs including survey priority scores and ranks returned by the \code{imp_smart_tool} function.
+#' @param survey_schedule_filepath Full file path (including file name) to CSV file containing annual survey implementation schedule.
+#' @param save_output Logical value controlling whether output is saved as CSV. Default is FALSE.
+#' @param save_filepath File path to folder where output is saved. File names are internally generated.
 #'
-#' @return
+#' @return Grid plot of an annual survey implementation schedule.
 #' @export
 #'
-#' @examples
 survey_schedule_plot <- function(smart_tool_output, survey_schedule = NULL, save_output = FALSE, save_filepath = NULL){
     old.par <- par(no.readonly = TRUE)
     nyears <- attributes(smart_tool_output)$nyears
@@ -87,7 +85,7 @@ survey_schedule_plot <- function(smart_tool_output, survey_schedule = NULL, save
     }
     if(save_output){
         if(is.null(save_filepath))save_filepath <- getwd()
-        png(paste0(save_filepath,"/",attributes(smart_tool_output)$refuge_code,"_annual_survey_schedule_wcost_", gsub("-","",Sys.Date()),".png"), 
+        png(paste0(save_filepath,"/",attributes(smart_tool_output)$refuge_code,"_annual_survey_schedule_wcost_", gsub("-","",Sys.Date()),".png"),
             height = 6.5, width = 9, units = "in", res = 192)
         plot_scores(ann_cost_matplot, mar = c(4, 8, 4, 4))
         dev.off()
@@ -100,28 +98,27 @@ survey_schedule_plot <- function(smart_tool_output, survey_schedule = NULL, save
 
 
 
-#' Title
+#' Impose Decision Constraints and Optimize Portfolio Selection
 #'
-#' @param optim_scenario 
-#' @param smart_tool_output 
-#' @param save_output 
-#' @param save_filepath 
-#' @param max_output 
-#' @param create_scatterplots 
-#' @param save_scatterplots 
+#' @param optim_scenario List of length 2 with one element containing survey selection constraints and the other containing a logical argument enforcing a budget constraint.
+#' @param smart_tool_output A data.frame containing SMART tool inputs and outputs including survey priority scores and ranks produced by the \code{imp_smart_tool} function.
+#' @param save_output Logical value controlling whether output is saved as CSV. Default is FALSE.
+#' @param save_filepath File path to folder where output is saved. File names are internally generated.
+#' @param max_output Maximum number of portfolios to output. Default = 10000.
+#' @param create_scatterplots Logical argument controlling whether to print scatterplots.
+#' @param save_scatterplots Logical argument controlling whether to save scatterplots. \code{save_filepath} argument used to set save location.
 #'
-#' @return
+#' @return A data.frame containing survey portfolios meeting scenario constraints and listed in ranking order based on cost-benefit scores.
 #' @export
 #'
-#' @examples
-optimize_scenario <- function(optim_scenario, smart_tool_output, save_output = FALSE, save_filepath = NULL, 
+scenario_optimization_tool <- function(optim_scenario, smart_tool_output, save_output = FALSE, save_filepath = NULL,
                               max_output = 10000, create_scatterplots = FALSE, save_scatterplots = FALSE){
     old.par <- par(no.readonly = TRUE)
     nsurveys <- nrow(smart_tool_output)
     nall <- 2^nsurveys
-    # Find all possible combinations for set of proposed surveys  
+    # Find all possible combinations for set of proposed surveys
     fullset <- as.matrix(expand.grid(replicate(nsurveys, 0:1, simplify = FALSE)))
-    # Calculate IMP utility metric (imp_priority_score), total IMP cost in staff weeks (imp_total_weeks), and 
+    # Calculate IMP utility metric (imp_priority_score), total IMP cost in staff weeks (imp_total_weeks), and
     # number of selected surveys (imp_count) for each combination.
     imp_annual_weeks <- fullset %*% smart_tool_output$annual_weeks
     imp_total_weeks <- fullset %*% (smart_tool_output$annual_weeks * smart_tool_output$imp_frequency)
@@ -149,7 +146,7 @@ optimize_scenario <- function(optim_scenario, smart_tool_output, save_output = F
     if(save_output){
         if(nrow(scenario_output)>max_output)out <- scenario_output[1:max_output,]
         write.csv(out, file = paste0(save_filepath, "/",attributes(smart_tool_output)$refuge_code,"_portfolio_output_scenario_",
-                                     optim_scenario$scenario_name, "_", gsub("-","",Sys.Date()),".csv"), 
+                                     optim_scenario$scenario_name, "_", gsub("-","",Sys.Date()),".csv"),
                   row.names = FALSE)
     }
     attr(scenario_output,"refuge_code") <- attributes(smart_tool_output)$refuge_code
@@ -163,23 +160,23 @@ optimize_scenario <- function(optim_scenario, smart_tool_output, save_output = F
         xy_scatter <- function(scenario_output, col_bins, imp_priority_score, imp_total_weeks){
             plot(scenario_output$imp_total_weeks,scenario_output$imp_priority_score,type = "p",pch = 21, xlab = "Total IMP Weeks", ylab = "Total Utility",
                  bg = terrain.colors(nlevels(col_bins))[col_bins], cex = log(scenario_output$imp_count/10)*2,
-                 ylim = c(min(scenario_output$imp_priority_score), max(imp_priority_score)), 
-                 xlim = c(min(scenario_output$imp_total_weeks),max(imp_total_weeks)), 
+                 ylim = c(min(scenario_output$imp_priority_score), max(imp_priority_score)),
+                 xlim = c(min(scenario_output$imp_total_weeks),max(imp_total_weeks)),
                  frame.plot = FALSE)
             abline(v=attributes(smart_tool_output)$imp_staff_budget)
             abline(h=max(imp_priority_score), lty = 2)
             points(max(imp_total_weeks), max(imp_priority_score), pch = 21, bg = "black", cex = log(nsurveys/10)*2)
         }
         s3d_asp1 <- function(scenario_output, col_bins, imp_priority_score, imp_total_weeks, nsurveys){
-            s3d <- scatterplot3d::scatterplot3d(scenario_output$imp_count, scenario_output$imp_total_weeks, scenario_output$imp_priority_score, 
+            s3d <- scatterplot3d::scatterplot3d(scenario_output$imp_count, scenario_output$imp_total_weeks, scenario_output$imp_priority_score,
                                                 pch = 21, type = "h", lty.hplot = 3,
                                                 cex.axis = .75,
-                                                xlim = c(min(scenario_output$imp_count),nsurveys), 
-                                                ylim = c(min(scenario_output$imp_total_weeks),max(imp_total_weeks)), 
+                                                xlim = c(min(scenario_output$imp_count),nsurveys),
+                                                ylim = c(min(scenario_output$imp_total_weeks),max(imp_total_weeks)),
                                                 zlim = c(min(scenario_output$imp_priority_score),max(imp_priority_score)),
-                                                cex.symbols = log(scenario_output$imp_count/10)/0.5, 
-                                                scale.y = 1, 
-                                                angle = 120, 
+                                                cex.symbols = log(scenario_output$imp_count/10)/0.5,
+                                                scale.y = 1,
+                                                angle = 120,
                                                 asp = 2,
                                                 bg = terrain.colors(nlevels(col_bins))[col_bins],
                                                 xlab = "Number of Surveys", ylab = "Total IMP Weeks",
@@ -189,15 +186,15 @@ optimize_scenario <- function(optim_scenario, smart_tool_output, save_output = F
             return(s3d)
         }
         s3d_asp2 <- function(scenario_output, col_bins, imp_priority_score, imp_total_weeks, nsurveys){
-            s3d <- scatterplot3d::scatterplot3d(scenario_output$imp_count, scenario_output$imp_total_weeks, scenario_output$imp_priority_score, 
+            s3d <- scatterplot3d::scatterplot3d(scenario_output$imp_count, scenario_output$imp_total_weeks, scenario_output$imp_priority_score,
                                                 pch = 21, type = "h", lty.hplot = 3,
                                                 cex.axis = .75,
-                                                xlim = c(min(scenario_output$imp_count),nsurveys), 
-                                                ylim = c(min(scenario_output$imp_total_weeks),max(imp_total_weeks)), 
+                                                xlim = c(min(scenario_output$imp_count),nsurveys),
+                                                ylim = c(min(scenario_output$imp_total_weeks),max(imp_total_weeks)),
                                                 zlim = c(min(scenario_output$imp_priority_score),max(imp_priority_score)),
-                                                cex.symbols = log(scenario_output$imp_count/10)/0.5, 
-                                                scale.y = 1, 
-                                                angle = 25, 
+                                                cex.symbols = log(scenario_output$imp_count/10)/0.5,
+                                                scale.y = 1,
+                                                angle = 25,
                                                 asp = 3,
                                                 bg = terrain.colors(nlevels(col_bins))[col_bins],
                                                 xlab = "Number of Surveys", ylab = "Total IMP Weeks",
@@ -206,7 +203,7 @@ optimize_scenario <- function(optim_scenario, smart_tool_output, save_output = F
                          col = "black", type = "h", pch = 21, bg = "black", cex = log(max(imp_count)/10)/0.5)
             return(s3d)
         }
-        
+
         if(save_scatterplots){
             constrain_budget <- attributes(scenario_output)$scenario$constrain_budget
             png(paste0(save_filepath, "/",attributes(smart_tool_output)$refuge_code,"_portfolio_scatter2d_scenario_",optim_scenario$scenario_name, "_", gsub("-","",Sys.Date()),".png"),

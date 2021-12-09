@@ -1,15 +1,14 @@
 
-#' Title
+#' Plot Top Performing Survey Portfolios Given Scenario Constraints
 #'
-#' @param scenario_output 
-#' @param ndisplay 
-#' @param save_output 
-#' @param save_filepath 
+#' @param scenario_output A data.frame of ranked portfolios for a given scenario returned by the \code{scenario_optimization_tool} function.
+#' @param ndisplay Number of portfolios to display. Default is top 10.
+#' @param save_output Logical value controlling whether output is saved as CSV. Default is FALSE.
+#' @param save_filepath File path to folder where output is saved. File names are internally generated.
 #'
-#' @return
+#' @return Grid plot of top-peforming survey portfolios.
 #' @export
 #'
-#' @examples
 portfolio_grid_plot <- function(scenario_output, ndisplay = 10, save_output = FALSE, save_filepath = NULL){
     old.par <- par(no.readonly = TRUE)
     nsurveys <- attributes(scenario_output)$nsurveys
@@ -42,10 +41,10 @@ portfolio_grid_plot <- function(scenario_output, ndisplay = 10, save_output = FA
             text_xadd[i] <- 0
         }
     }
-    names(scen_mat)[1:22] <- paste0(names(scen_mat)[1:22], " (", 
+    names(scen_mat)[1:22] <- paste0(names(scen_mat)[1:22], " (",
                                     format(round(attributes(scenario_output)$survey_priority_scores,2), nsmall = 2),")")
-    scen_matplot <- plot(as.matrix(scen_mat), cex = 0.5, xlab = "", ylab = "", 
-                         main = paste0("Scenario ",attributes(scenario_output)$scenario_name, 
+    scen_matplot <- plot(as.matrix(scen_mat), cex = 0.5, xlab = "", ylab = "",
+                         main = paste0("Scenario ",attributes(scenario_output)$scenario_name,
                                        " Top ",ndisplay, " Portfolio Alternatives"),
                          breaks = c(-2,-1,0, max(scen_mat)), col = matplot_cols, digits = 2,
                          axis.col = list(side = 1, las = 2, cex.axis = 0.7, labels = rep("",ncol(scen_mat))),
@@ -75,7 +74,7 @@ portfolio_grid_plot <- function(scenario_output, ndisplay = 10, save_output = FA
     if(save_output){
         if(is.null(save_filepath))save_filepath <- getwd()
         png(paste0(save_filepath, "/",attributes(scenario_output)$refuge_code,
-                   "_top",ndisplay,"portfolios_scenario_", attributes(scenario_output)$scenario$scenario_name, "_", gsub("-","",Sys.Date()),".png"), 
+                   "_top",ndisplay,"portfolios_scenario_", attributes(scenario_output)$scenario$scenario_name, "_", gsub("-","",Sys.Date()),".png"),
             height = 6.5, width = 9, units = "in", res = 192)
         plot_scores(scen_matplot, c(8,4,4,6))
         text(scen_matplot$axis.col$at, par("usr")[3]-0.5, adj = 1, xpd = NA,

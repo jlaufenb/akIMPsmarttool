@@ -1,15 +1,14 @@
 
 
-#' Title
+#' Plot Bar Chart of Survey Priority Scores
 #'
-#' @param smart_tool_output 
-#' @param save_output 
-#' @param save_filepath 
+#' @param smart_tool_output A data.frame containing SMART tool inputs and outputs including survey priority scores and ranks returned by the \code{imp_smart_tool} function.
+#' @param save_output Logical value controlling whether output is saved as CSV. Default is FALSE.
+#' @param save_filepath File path to folder where output is saved. File names are internally generated.
 #'
-#' @return
+#' @return Bar plot
 #' @export
 #'
-#' @examples
 priority_score_barchart <- function(smart_tool_output, save_output = FALSE, save_filepath = NULL){
     # Bar chart of survey priority scores
     old.par <- par(no.readonly = TRUE)
@@ -23,7 +22,7 @@ priority_score_barchart <- function(smart_tool_output, save_output = FALSE, save
         barplot(smart_tool_output$survey_priority_score, beside = TRUE, axes = FALSE, col = bar_cols,
                 ylab = "Priority score", xlab = "", main = "", space = 1, names.arg = FALSE)
         axis(2)
-        text(seq(1.5, end_point, by = 2), par("usr")[3] - 0.025, 
+        text(seq(1.5, end_point, by = 2), par("usr")[3] - 0.025,
              srt = 60, adj = 1, xpd = TRUE,
              labels = smart_tool_output$survey_name, cex = 1)
         dev.off()
@@ -32,7 +31,7 @@ priority_score_barchart <- function(smart_tool_output, save_output = FALSE, save
         barplot(smart_tool_output$survey_priority_score, beside = TRUE, axes = FALSE, col = bar_cols,
                 ylab = "Priority score", xlab = "", main = "", space = 1, names.arg = FALSE)
         axis(2)
-        text(seq(1.5, end_point, by = 2), par("usr")[3] - 0.025, 
+        text(seq(1.5, end_point, by = 2), par("usr")[3] - 0.025,
              srt = 60, adj = 1, xpd = TRUE,
              labels = smart_tool_output$survey_name, cex = 1)
     }
@@ -40,16 +39,15 @@ priority_score_barchart <- function(smart_tool_output, save_output = FALSE, save
 }
 
 
-#' Title
+#' Plot Pie Chart of Survey Priority Scores
 #'
-#' @param smart_tool_output 
-#' @param save_output 
-#' @param save_filepath 
+#' @param smart_tool_output A data.frame containing SMART tool inputs and outputs including survey priority scores and ranks returned by the \code{imp_smart_tool} function.
+#' @param save_output Logical value controlling whether output is saved as CSV. Default is FALSE.
+#' @param save_filepath File path to folder where output is saved. File names are internally generated.
 #'
-#' @return
+#' @return Pie chart plot
 #' @export
 #'
-#' @examples
 priority_score_piechart <- function(smart_tool_output, save_output = FALSE, save_filepath = NULL){
     # Pie chart of survey priority score
     old.par <- par(no.readonly = TRUE)
@@ -60,14 +58,14 @@ priority_score_piechart <- function(smart_tool_output, save_output = FALSE, save
     lbls <- paste(lbls,"%",sep = "") # ad % to labels
     if(save_output){
         if(is.null(save_filepath))save_filepath <- getwd()
-        png(paste0("output/tet/survey_priority_score_piechart_", gsub("-","",Sys.Date()),".png"), 
-            height = 6.5, width = 6.5, units = "in", res = 192)    
-        pie(slices,labels = lbls, col = rainbow(length(lbls)), 
+        png(paste0("output/tet/survey_priority_score_piechart_", gsub("-","",Sys.Date()),".png"),
+            height = 6.5, width = 6.5, units = "in", res = 192)
+        pie(slices,labels = lbls, col = rainbow(length(lbls)),
             cex = smart_tool_output$survey_priority_score * 0.5,
             main = "Pie Chart of Survey Priority (benefit-cost) Scores")
         dev.off()
     }else{
-        pie(slices,labels = lbls, col = rainbow(length(lbls)), 
+        pie(slices,labels = lbls, col = rainbow(length(lbls)),
             cex = smart_tool_output$survey_priority_score * 0.5,
             main = "Pie Chart of Survey Priority (benefit-cost) Scores")
     }
