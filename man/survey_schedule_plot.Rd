@@ -6,7 +6,7 @@
 \usage{
 survey_schedule_plot(
   smart_tool_output,
-  survey_schedule = NULL,
+  survey_schedule_filepath = NULL,
   save_output = FALSE,
   save_filepath = NULL
 )
@@ -14,11 +14,11 @@ survey_schedule_plot(
 \arguments{
 \item{smart_tool_output}{A data.frame containing SMART tool inputs and outputs including survey priority scores and ranks returned by the \code{imp_smart_tool} function.}
 
+\item{survey_schedule_filepath}{Full file path (including file name) to CSV file containing annual survey implementation schedule.}
+
 \item{save_output}{Logical value controlling whether output is saved as CSV. Default is FALSE.}
 
 \item{save_filepath}{File path to folder where output is saved. File names are internally generated.}
-
-\item{survey_schedule_filepath}{Full file path (including file name) to CSV file containing annual survey implementation schedule.}
 }
 \value{
 Grid plot of an annual survey implementation schedule.
