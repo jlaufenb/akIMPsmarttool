@@ -14,4 +14,4 @@ akIMPsmarttool is an R package with a suite of custom functions used to implemen
 
 ## Package installation
 `if (!require("devtools")) install.packages("devtools")`  
-`install_github("jlaufenb/akIMPsmarttool")`
+`devtools::install_github("jlaufenb/akIMPsmarttool")`
