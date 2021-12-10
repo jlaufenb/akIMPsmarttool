@@ -11,3 +11,6 @@ Government.
 
 # akIMPsmarttool
 akIMPsmarttool is an R package with a suite of custom functions used to implement the IMP Smart Tool and other related survey selection tools.
+
+## Package installation
+`if (!require("akIMPsmarttool")) install.packages("akIMPsmarttool")`  
