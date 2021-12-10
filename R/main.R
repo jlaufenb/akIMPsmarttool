@@ -57,11 +57,11 @@ imp_smart_tool <- function(refuge_code = NULL, start_year = NULL, nyears = NULL,
 #' @return Grid plot of an annual survey implementation schedule.
 #' @export
 #'
-survey_schedule_plot <- function(smart_tool_output, survey_schedule = NULL, save_output = FALSE, save_filepath = NULL){
+survey_schedule_plot <- function(smart_tool_output, survey_schedule_filepath = NULL, save_output = FALSE, save_filepath = NULL){
     old.par = par(no.readonly = TRUE)
     nyears = attributes(smart_tool_output)$nyears
     years = attributes(smart_tool_output)$start_year + 0:(nyears-1)
-    survey_sched_df = read.csv(survey_schedule)
+    survey_sched_df = read.csv(survey_schedule_filepath)
     neworder = match(smart_tool_output$survey_name, survey_sched_df$survey_name)
     annual_surv_sched = as.matrix(survey_sched_df[neworder,grepl("year", names(survey_sched_df))])
     annual_surv_cost = matrix(rep(smart_tool_output$annual_weeks[neworder], nyears), ncol = nyears) * annual_surv_sched
