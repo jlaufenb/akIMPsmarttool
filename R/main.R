@@ -143,9 +143,9 @@ scenario_optimization_tool <- function(optim_scenario, smart_tool_output, save_o
         scenario_output = as.data.frame(scenario_output[order(scenario_output[,"imp_priority_score"],decreasing = TRUE),])
     }
     if(is.null(save_filepath))save_filepath = getwd()
+    if(nrow(scenario_output)>max_output)scenario.output = scenario_output[1:max_output,]
     if(save_output){
-        if(nrow(scenario_output)>max_output)out = scenario_output[1:max_output,]
-        write.csv(out, file = paste0(save_filepath, "/",attributes(smart_tool_output)$refuge_code,"_portfolio_output_scenario_",
+        write.csv(scenario.output, file = paste0(save_filepath, "/",attributes(smart_tool_output)$refuge_code,"_portfolio_output_scenario_",
                                      optim_scenario$scenario_name, "_", gsub("-","",Sys.Date()),".csv"),
                   row.names = FALSE)
     }
