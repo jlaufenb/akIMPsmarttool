@@ -10,12 +10,11 @@
 #' @export
 #'
 portfolio_grid_plot <- function(scenario_output, ndisplay = 10, save_output = FALSE, save_filepath = NULL){
-    old.par = par(no.readonly = TRUE)
     nsurveys = attributes(scenario_output)$nsurveys
     scen_mat = scenario_output[1:ndisplay,c(1:nsurveys,which(grepl("imp_priority_score", names(scenario_output))))]
     roundvals = scen_mat
     scen_mat[,which(!grepl("imp", names(scen_mat)))] = scen_mat[,which(!grepl("imp", names(scen_mat)))] - 1
-    names(scen_mat)[which(grepl("imp", names(scen_mat)))] = "Portfolio Score"
+    names(scen_mat)[which(grepl("imp", names(scen_mat)))] = "Priority Score"
     raw_scenvals = unlist(scen_mat)
     zeros = which(raw_scenvals == (-1))
     ones = which(raw_scenvals == 0)
@@ -44,8 +43,8 @@ portfolio_grid_plot <- function(scenario_output, ndisplay = 10, save_output = FA
     names(scen_mat)[1:22] = paste0(names(scen_mat)[1:22], " (",
                                     format(round(attributes(scenario_output)$survey_priority_scores,2), nsmall = 2),")")
     scen_matplot = plot(as.matrix(scen_mat), cex = 0.5, xlab = "", ylab = "",
-                         main = paste0("Scenario ",attributes(scenario_output)$scenario_name,
-                                       " Top ",ndisplay, " Portfolio Alternatives"),
+                         main = paste0("Scenario ",attributes(scenario_output)$scenario$scenario_name,
+                                       " Top ",ndisplay, " Survey Sets"),
                          breaks = c(-2,-1,0, max(scen_mat)), col = matplot_cols, digits = 2,
                          axis.col = list(side = 1, las = 2, cex.axis = 0.7, labels = rep("",ncol(scen_mat))),
                          axis.row = list(side = 2, las = 2, cex.axis = 0.9),
@@ -74,22 +73,22 @@ portfolio_grid_plot <- function(scenario_output, ndisplay = 10, save_output = FA
     if(save_output){
         if(is.null(save_filepath))save_filepath = getwd()
         png(paste0(save_filepath, "/",attributes(scenario_output)$refuge_code,
-                   "_top",ndisplay,"portfolios_scenario_", attributes(scenario_output)$scenario$scenario_name, "_", gsub("-","",Sys.Date()),".png"),
+                   "_top",ndisplay,"_surveysets_scenario_", attributes(scenario_output)$scenario$scenario_name, "_", gsub("-","",Sys.Date()),".png"),
             height = 6.5, width = 9, units = "in", res = 192)
         plot_scores(scen_matplot, c(8,4,4,6))
         text(scen_matplot$axis.col$at, par("usr")[3]-0.5, adj = 1, xpd = NA,
              labels = colnames(scen_mat), srt = 45, cex = 0.7)
-        mtext("Proposed Surveys (summed weighted survey scores) and Portfolio Score", side = 1, line = 7)
-        mtext("Portfolio Alternative Rank", side = 2, line = 3)
+        mtext("Proposed Surveys (summed weighted survey scores) and Priority Score", side = 1, line = 7)
+        mtext("Survey Set Rank", side = 2, line = 3)
         dev.off()
     }else{
+        dev.new()
         plot_scores(scen_matplot, c(8,4,4,6))
         text(scen_matplot$axis.col$at, par("usr")[3]-0.5, adj = 1, xpd = NA,
              labels = colnames(scen_mat), srt = 45, cex = 0.7)
-        mtext("Proposed Surveys (summed weighted survey scores) and Portfolio Score", side = 1, line = 7)
-        mtext("Portfolio Alternative Rank", side = 2, line = 3)
+        mtext("Proposed Surveys (summed weighted survey scores) and Priority Score", side = 1, line = 7)
+        mtext("Survey Set Rank", side = 2, line = 3)
     }
-    par(old.par)
 }
 
 
