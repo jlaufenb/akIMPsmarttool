@@ -31,6 +31,8 @@ imp_smart_tool <- function(refuge_code = NULL, start_year = NULL, nyears = NULL,
     smart_tool_output = smart_tool_output[order(smart_tool_output$survey_priority_score, decreasing = TRUE),]
     smart_tool_output$survey_priority_rank = 1:nrow(smart_tool_output)
     smart_tool_output$source = factor(smart_tool_output$source)
+    benefit_indz = grep("Cost", criteria_df$name_lev1, invert = TRUE)
+    smart_tool_output$benefits_only_score = as.vector(as.matrix(norm_scores[indz,benefit_indz]) %*% criteria_df$init_weight[benefit_indz])
     if(is.null(save_filepath))save_filepath = getwd()
     if(save_output)write.csv(smart_tool_output, file = paste0(save_filepath,"/",refuge_code,"_imp_smart_tool_output_",gsub("-","",Sys.Date()),".csv"), row.names = FALSE)
     attr(smart_tool_output, "refuge_code") = refuge_code
@@ -58,7 +60,6 @@ imp_smart_tool <- function(refuge_code = NULL, start_year = NULL, nyears = NULL,
 #' @export
 #'
 survey_schedule_plot <- function(smart_tool_output, survey_schedule_filepath = NULL, save_output = FALSE, save_filepath = NULL){
-    old.par = par(no.readonly = TRUE)
     nyears = attributes(smart_tool_output)$nyears
     years = attributes(smart_tool_output)$start_year + 0:(nyears-1)
     survey_sched_df = read.csv(survey_schedule_filepath)
@@ -90,9 +91,9 @@ survey_schedule_plot <- function(smart_tool_output, survey_schedule_filepath = N
         plot_scores(ann_cost_matplot, mar = c(4, 8, 4, 4))
         dev.off()
     }else{
+        dev.new()
         plot_scores(ann_cost_matplot, mar = c(4, 8, 4, 4))
     }
-    par(old.par)
     return(annual_surv_cost)
 }
 
@@ -113,7 +114,6 @@ survey_schedule_plot <- function(smart_tool_output, survey_schedule_filepath = N
 #'
 scenario_optimization_tool <- function(optim_scenario, smart_tool_output, save_output = FALSE, save_filepath = NULL,
                               max_output = 10000, create_scatterplots = FALSE, save_scatterplots = FALSE){
-    old.par = par(no.readonly = TRUE)
     nsurveys = nrow(smart_tool_output)
     nall = 2^nsurveys
     # Find all possible combinations for set of proposed surveys
@@ -219,11 +219,13 @@ scenario_optimization_tool <- function(optim_scenario, smart_tool_output, save_o
             s3d_asp2(scenario_output, col_bins, imp_priority_score, imp_total_weeks, nsurveys)
             dev.off()
         }else{
+            dev.new()
             xy_scatter(scenario_output, col_bins, imp_priority_score, imp_total_weeks)
+            dev.new()
             s3d_asp1(scenario_output, col_bins, imp_priority_score, imp_total_weeks, nsurveys)
+            dev.new()
             s3d_asp2(scenario_output, col_bins, imp_priority_score, imp_total_weeks, nsurveys)
         }
     }
-    par(old.par)
     return(scenario_output)
 }
