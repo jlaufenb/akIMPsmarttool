@@ -82,7 +82,6 @@ portfolio_grid_plot <- function(scenario_output, ndisplay = 10, save_output = FA
         mtext("Survey Set Rank", side = 2, line = 3)
         dev.off()
     }else{
-        dev.new()
         plot_scores(scen_matplot, c(8,4,4,6))
         text(scen_matplot$axis.col$at, par("usr")[3]-0.5, adj = 1, xpd = NA,
              labels = colnames(scen_mat), srt = 45, cex = 0.7)

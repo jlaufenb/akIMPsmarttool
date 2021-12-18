@@ -27,7 +27,6 @@ priority_score_barchart <- function(smart_tool_output, combined = FALSE, save_ou
                  labels = paste0(smart_tool_output$survey_name, note), cex = 1)
             dev.off()
         }else{
-            dev.new()
             par(mar = c(8,5,2,2))
             barplot(smart_tool_output$survey_priority_score, beside = TRUE, axes = FALSE, col = gray.colors(10)[4], ylim = c(0,1),
                     ylab = "Priority score", xlab = "", main = "", space = 1, names.arg = FALSE)
@@ -54,7 +53,6 @@ priority_score_barchart <- function(smart_tool_output, combined = FALSE, save_ou
                  labels = paste0(smart_tool_output$survey_name, note), cex = 1)
             dev.off()
         }else{
-            dev.new()
             par(mar = c(8,5,2,2))
             barplot(height = as.matrix(plot_df), beside = TRUE, axes = FALSE, col = gray.colors(10)[c(4,10)], ylim = c(0,1),
                     ylab = "Priority score", xlab = "", main = "", names.arg = rep("",ncol(plot_df)))
@@ -93,7 +91,6 @@ priority_score_piechart <- function(smart_tool_output, save_output = FALSE, save
             main = "Pie Chart of Survey Priority (benefit-cost) Scores")
         dev.off()
     }else{
-        dev.new()
         pie(slices,labels = lbls, col = rainbow(length(lbls)),
             cex = smart_tool_output$survey_priority_score * 0.5,
             main = "Pie Chart of Survey Priority (benefit-cost) Scores")

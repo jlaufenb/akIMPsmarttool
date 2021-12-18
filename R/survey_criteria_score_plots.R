@@ -24,7 +24,6 @@ benefits_piechart <- function(smart_tool_output, save_output = FALSE, save_filep
         pie(slices,labels = lbls, col=rainbow(length(lbls)), cex = slices, main = "Pie Chart of Survey Benefits")
         dev.off()
     }else{
-        dev.new()
         pie(slices,labels = lbls, col=rainbow(length(lbls)), cex = slices, main = "Pie Chart of Survey Benefits")
     }
 }
@@ -40,7 +39,6 @@ benefits_piechart <- function(smart_tool_output, save_output = FALSE, save_filep
 #'
 costs_piechart <- function(smart_tool_output, save_output = FALSE, save_filepath = NULL){
     # Pie chart of survey costs
-    dev.new()
     slices = smart_tool_output$annual_weeks * smart_tool_output$imp_frequency
     lbls = smart_tool_output$survey_name
     pct = round(slices/sum(slices)*100)
@@ -71,7 +69,6 @@ costs_piechart <- function(smart_tool_output, save_output = FALSE, save_filepath
 #'
 weights_piechart <- function(smart_tool_output, save_output = FALSE, save_filepath = NULL){
     # Pie chart of criteria weights
-    dev.new()
     slices = attributes(smart_tool_output)$criteria_weights
     lbls = paste0(attributes(smart_tool_output)$criteria_names, c(rep(" (benefit)",8)," (cost)"))
     pct = round(slices/sum(slices)*100)
@@ -122,7 +119,6 @@ survey_scores_hists <- function(smart_tool_output, save_output = FALSE, save_fil
              xlab = "Weighted normalized criteria score", main = "")
         dev.off()
     }else{
-        dev.new()
         par(mfrow = c(2,1))
         plot(plotx, ylim = ylims, col = "gray",
              xlab = "Normalized criteria score", main = "")
@@ -143,7 +139,6 @@ survey_scores_hists <- function(smart_tool_output, save_output = FALSE, save_fil
 #' @export
 #'
 plot_scores <- function(matplot, mar = c(8, 14, 4, 4)){
-    dev.new()
     par(mar = mar + 0.01 ) # adapt margins
     if(!is.null(matplot$plot))do.call("plot", matplot$plot)
     if(!is.null(matplot$cell.polygon))lapply(matplot$cell.polygon, do.call, what = "polygon")
@@ -170,7 +165,6 @@ normalized_score_gridplot <- function(smart_tool_output, save_output = FALSE, sa
     rownames(norm_mat) = paste0(rownames(norm_mat), " (", format(round(rowSums(norm_mat),2),nsmall = 2),")")
     norm_truezeros = which(c(t(norm_mat)) == 0)
     norm_littles = which(c(t(norm_mat)) > 0 & c(t(norm_mat)) < 0.01)
-    dev.new()
     norm_matplot = plot(t(norm_mat), cex = 0.6, xlab = "", ylab = "", main = "Normalized Criteria Scores",
                          breaks = seq(0,1,0.1), col = terrain.colors(n = length(seq(0,1,0.1)) - 1, alpha = 0.5), digits = 2,
                          axis.col = list(side = 1, las = 2, cex.axis = 0.7, labels = rep("",nsurveys)),
@@ -198,7 +192,6 @@ normalized_score_gridplot <- function(smart_tool_output, save_output = FALSE, sa
         mtext("Prioritization Criteria", side = 2, line = 11)
         dev.off()
     }else{
-        dev.new()
         plot_scores(norm_matplot, mar = c(7, 12, 4, 2))
         text(norm_matplot$axis.col$at, par("usr")[3]-0.5, adj = 1, xpd = NA,
              labels = rownames(norm_mat), srt = 45, cex = 0.7)
@@ -254,7 +247,6 @@ weighted_score_gridplot <- function(smart_tool_output, save_output = FALSE, save
         mtext("Prioritization Criteria (criteria weight)", side = 2, line = 11)
         dev.off()
     }else{
-        dev.new()
         plot_scores(wgtnorm_matplot, mar = c(7, 12, 4, 2))
         text(wgtnorm_matplot$axis.col$at, par("usr")[3]-0.5, adj = 1, xpd = NA,
              labels = rownames(weighted_norm_mat), srt = 45, cex = 0.7)

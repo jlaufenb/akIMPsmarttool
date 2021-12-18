@@ -91,7 +91,6 @@ survey_schedule_plot <- function(smart_tool_output, survey_schedule_filepath = N
         plot_scores(ann_cost_matplot, mar = c(4, 8, 4, 4))
         dev.off()
     }else{
-        dev.new()
         plot_scores(ann_cost_matplot, mar = c(4, 8, 4, 4))
     }
     return(annual_surv_cost)
@@ -219,11 +218,8 @@ scenario_optimization_tool <- function(optim_scenario, smart_tool_output, save_o
             s3d_asp2(scenario_output, col_bins, imp_priority_score, imp_total_weeks, nsurveys)
             dev.off()
         }else{
-            dev.new()
             xy_scatter(scenario_output, col_bins, imp_priority_score, imp_total_weeks)
-            dev.new()
             s3d_asp1(scenario_output, col_bins, imp_priority_score, imp_total_weeks, nsurveys)
-            dev.new()
             s3d_asp2(scenario_output, col_bins, imp_priority_score, imp_total_weeks, nsurveys)
         }
     }
