@@ -28,11 +28,11 @@ imp_smart_tool <- function(refuge_code = NULL, start_year = NULL, nyears = NULL,
     rownames(weighted_norm_scores) = surveydat_df$survey_name
     priority_scores = as.matrix(norm_scores) %*% criteria_df$final_weight
     smart_tool_output = data.frame(surveydat_df,norm_scores, weighted_norm_scores,survey_priority_score = priority_scores)
+    benefit_indz = grep("Cost", criteria_df$name_lev1, invert = TRUE)
+    smart_tool_output$benefits_only_score = as.vector(as.matrix(norm_scores[,benefit_indz]) %*% criteria_df$init_weight[benefit_indz])
     smart_tool_output = smart_tool_output[order(smart_tool_output$survey_priority_score, decreasing = TRUE),]
     smart_tool_output$survey_priority_rank = 1:nrow(smart_tool_output)
     smart_tool_output$source = factor(smart_tool_output$source)
-    benefit_indz = grep("Cost", criteria_df$name_lev1, invert = TRUE)
-    smart_tool_output$benefits_only_score = as.vector(as.matrix(norm_scores[indz,benefit_indz]) %*% criteria_df$init_weight[benefit_indz])
     if(is.null(save_filepath))save_filepath = getwd()
     if(save_output)write.csv(smart_tool_output, file = paste0(save_filepath,"/",refuge_code,"_imp_smart_tool_output_",gsub("-","",Sys.Date()),".csv"), row.names = FALSE)
     attr(smart_tool_output, "refuge_code") = refuge_code
